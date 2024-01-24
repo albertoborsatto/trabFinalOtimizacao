@@ -1,5 +1,16 @@
 from pulp import LpProblem, LpVariable, lpSum, LpMinimize, LpInteger
 
+def read_input_file(fileName):
+    with open(fileName, 'r') as file:
+        bin = int(file.readline())
+        bin_capacity = int(file.readline())
+        weights = []
+        for item in range(bin):
+            weights.append(int(file.readline()))
+
+        return bin, bin_capacity, weights
+
+
 def bin_packing_integer(items, bin_capacity):
     # Criação do problema de programação inteira
     prob = LpProblem("BinPackingInteger", LpMinimize)
