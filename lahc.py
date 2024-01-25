@@ -15,18 +15,23 @@ def neighbor(current_solution):
         new_solution[random_bin].sort()  
     return new_solution
 
-def late_acceptance(current_solution, new_solution):
+def late_acceptance(current_solution, new_solution, iterations=50):
     current_fitness = evaluate_solution(current_solution)
     new_fitness = evaluate_solution(new_solution)
 
     if new_fitness < current_fitness:
         return new_solution
+    
+    for i in range(1, iterations + 1):
+            if random.random() < 1 / i:
+                return new_solution
 
     return current_solution
 
 def bin_packing_lahc(items, bin_capacity):
     current_solution = [[]]
 
+#
     for item in sorted(items, reverse=True):
         if sum(current_solution[-1]) + item <= bin_capacity:
             current_solution[-1].append(item)
