@@ -1,7 +1,4 @@
 import random
-import time
-
-timeout = time.time() + 4*1 #stop after x amount of seconds
 
 def bin_packing_lahc(items, bin_capacity):
     def evaluate_solution(solution):
@@ -12,8 +9,10 @@ def bin_packing_lahc(items, bin_capacity):
         new_solution = [list(bin) for bin in current_solution]
         random_item = random.choice(range(len(items)))
         random_bin = random.choice(range(len(new_solution)))
-        new_solution[random_bin].append(items[random_item])
-        new_solution[random_bin].sort()  # Optional: Sort items in each bin
+        # Check if adding the item exceeds the bin capacity
+        if sum(new_solution[random_bin]) + items[random_item] <= bin_capacity:
+            new_solution[random_bin].append(items[random_item])
+            new_solution[random_bin].sort()  # Optional: Sort items in each bin
         return new_solution
 
     def late_acceptance(current_solution, new_solution, iterations=50):
@@ -33,11 +32,15 @@ def bin_packing_lahc(items, bin_capacity):
     current_solution = [[]]
 
     for item in sorted(items, reverse=True):
-        best_bin = min(range(len(current_solution)), key=lambda i: sum(current_solution[i]))
-        current_solution[best_bin].append(item)
+        # Check if the item can fit in the current bin or if a new bin is needed
+        if sum(current_solution[-1]) + item <= bin_capacity:
+            current_solution[-1].append(item)
+        else:
+            current_solution.append([item])
 
     # Apply late acceptance hill climbing
-    while time.time() < timeout:
+    max_iterations = 1000
+    for _ in range(max_iterations):
         new_solution = neighbor(current_solution)
         current_solution = late_acceptance(current_solution, new_solution)
 
