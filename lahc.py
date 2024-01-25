@@ -7,14 +7,27 @@ def evaluate_solution(solution):
     #retorna solução melhor
     return max(sum(bin) for bin in solution)
 
+#escolher um cesto aleatório e adicionar um item aleatório a ele (verificando se é uma solução válida, onde a restrição de capacidade é respeitada)
 def neighbor(current_solution):
-    #escolher um cesto aleatório e adicionar um item aleatório a ele (verificando se é uma solução válida, onde a restrição de capacidade é respeitada)
-    new_solution = [list(bin) for bin in current_solution]
-    random_item = random.choice(range(len(items)))
-    random_bin = random.choice(range(len(new_solution)))
-    if sum(new_solution[random_bin]) + items[random_item] <= bin_capacity:
-        new_solution[random_bin].append(items[random_item])
-        new_solution[random_bin].sort()
+    new_solution = [list(bin) for bin in current_solution]  # copiar solução atual
+    random_bin_item = random.choice(range(len(new_solution)))   # escolher um cesto aleatório (1)
+    random_item = random.choice(range(len(new_solution[random_bin_item])))  # escolher um item aleatório do random_bin_item
+    random_bin = random.choice(range(len(new_solution)))    # escolher outro cesto aleatório (2)
+
+    #print(sum(new_solution[random_bin]), " - ", new_solution[random_bin_item][random_item])
+
+    #caso o item do cesto aleatório 'random_bin_item' + a soma dos item do cesto aleatório random_bin seja menor ou igual que a capacidade do cesto:
+    if sum(new_solution[random_bin]) + new_solution[random_bin_item][random_item] <= bin_capacity:
+        try:
+            new_solution[random_bin].append(new_solution[random_bin_item][random_item]) #fazer um append do item ao cesto
+            new_solution[random_bin_item].remove(new_solution[random_bin_item][random_item])    #remover item de seu cesto original
+            if(len(new_solution[random_bin_item])==0):  #caso o cesto original do item estiver vazio após sua retirada
+                new_solution.pop(random_bin_item)           #remover cesto vazio
+            new_solution[random_bin].sort() #sort do cesto 
+        except:
+            print("nao sei porque sort da out_of_range exception")  #às vezes o sort dá exceção por alguma razão
+        
+        #print("new solution2: ", new_solution)
     return new_solution
 
 def late_acceptance(current_solution, new_solution, iterations=50):
@@ -41,8 +54,8 @@ def bin_packing_lahc(items, bin_capacity):
         else:
             current_solution.append([item])
 
-    # apply late acceptance hill climbing with timeout
-    while time.time() < timeout:
+    # apply late acceptance hill climbing with timeout (pretendemos colocar timeout após verificar que implementação está correta)
+    for i in range(1000):
         new_solution = neighbor(current_solution)
         current_solution = late_acceptance(current_solution, new_solution)
 
