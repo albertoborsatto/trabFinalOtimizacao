@@ -77,7 +77,7 @@ def late_acceptance(s, lh, new_solution):
     if(best_solution3 == s):
         lh[0] = s
 
-    return lista_com_menor_comprimento(lh)
+    return [lista_com_menor_comprimento(lh), s, lh[0]]
 
 
     # HB: Esse código abaixo é completo nonsense. O LAHC não usa critério de
@@ -119,8 +119,10 @@ def bin_packing_lahc(items, bin_capacity):
     s = lh[0]
     for i in range(1000):
         final_solution = neighbor(s, bin_capacity, s, lh)
+        s = final_solution[1]
+        lh[0] = final_solution[2]
 
-    return final_solution
+    return final_solution[0]
 
 '''
 # exemplo
