@@ -26,10 +26,15 @@ def lista_com_menor_comprimento(lista_de_listas):
     return min(lista_de_listas, key=len)
 
 def evaluate_solution(old_solution, new_solution):
-    if(len(old_solution) <= len(new_solution)):
+    if(len(old_solution) < len(new_solution)):
         return old_solution
-    else:
+    elif(len(new_solution) < len(old_solution)):
         return new_solution
+    else:
+        menor_soma_old = min(map(sum, old_solution))
+        menor_soma_new = min(map(sum, new_solution))
+        if(menor_soma_new <= menor_soma_old): return new_solution
+        else: return old_solution
 
 def neighbor():
     global bin_capacity, s, lh
@@ -70,7 +75,6 @@ def bin_packing_lahc(items):
     global bin_capacity, s, lh
     current_solution = [[]]
 
-    '''
     # First fit
     for item in items:
         old_bin = False
@@ -84,9 +88,8 @@ def bin_packing_lahc(items):
     print("Initial:")
     for bin in current_solution:
         print(bin)
-    '''
+    
 
-    current_solution = [[2], [8], [7,1], [6], [5], [4]]
     lh = [current_solution] * 20
     s = lh[0]
     for i in range(1000):
