@@ -9,6 +9,15 @@ s = [[]]
 lh = []
 randomize = False
 
+def valid_solution(bins, max_weight): 
+    for bin in bins:
+        wT = 0
+        for w in bin:
+            wT+=w
+        if wT > max_weight:
+            return False
+    return True
+
 def read_input_file(fileName):
     global bin_capacity
     with open(fileName, 'r') as file:
@@ -78,10 +87,12 @@ def late_acceptance(new_solution):
 
 def bin_packing_lahc(items):
     global bin_capacity, s, lh, randomize
+    '''
     current_solution = [[]]
 
+
     # First fit
-    """ for item in items:
+    for item in items:
         old_bin = False
         for bin in current_solution:
             if sum(bin) + item <= bin_capacity:
@@ -92,17 +103,15 @@ def bin_packing_lahc(items):
             current_solution.append([item])
     print("Initial:")
     for bin in current_solution:
-        print(bin) """
-    
-    current_solution = [[3],[5], [2], [7], [1], [4], [8], [6]]
-
+        print(bin)
+    '''
+    current_solution = items
     lh = [current_solution] * 20
     s = lh[0]
-    for i in range(1000):
+    for i in range(1000000):
         if(randomize):
             random.shuffle(s)
             randomize = False
-            print(s)
         neighbor()
 
 '''
@@ -114,10 +123,17 @@ bin_capacity = 10
 #bin, bin_capacity, items = read_input_file('instances/BPP_100_150_0.1_0.7_0.txt')
 
 if __name__ == '__main__':
-    bin_capacity = 10
-    items = [3,5,2,7,1,4,8,6]
+    items2 = []
+    bin, bin_capacity, items = read_input_file('instances/BPP_100_150_0.1_0.7_0.txt')
 
-    bin_packing_lahc(items)
+    for i in items:
+        items2.append([i])
+
+    print(items2)
+    bin_packing_lahc(items2)
     print("Result:")
     for bin in s:
         print(bin)
+    print(len(s))
+
+    print(valid_solution(s, bin_capacity))
