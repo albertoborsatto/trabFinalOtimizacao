@@ -7,6 +7,7 @@ timeout = time.time() + 4
 bin_capacity = 0
 s = [[]]
 lh = []
+randomize = False
 
 def read_input_file(fileName):
     global bin_capacity
@@ -58,25 +59,29 @@ def neighbor():
                         return
 
 def late_acceptance(new_solution):
-    global bin_capacity, s, lh
+    global bin_capacity, s, lh, randomize
     best_solution1 = evaluate_solution(s, new_solution)
     best_solution2 = evaluate_solution(lh[0], new_solution)
 
+    if(best_solution1 == s):
+        randomize = True
+        return
+    
     if(best_solution1 == new_solution or best_solution2 == new_solution):
         s = new_solution
-
-    best_solution3 = evaluate_solution(s, lh[0])
+    
+    best_solution3 = evaluate_solution(lh[0], s)
 
     if(best_solution3 == s):
         lh.pop(0)
         lh.append(s)
 
 def bin_packing_lahc(items):
-    global bin_capacity, s, lh
+    global bin_capacity, s, lh, randomize
     current_solution = [[]]
 
     # First fit
-    for item in items:
+    """ for item in items:
         old_bin = False
         for bin in current_solution:
             if sum(bin) + item <= bin_capacity:
@@ -87,12 +92,17 @@ def bin_packing_lahc(items):
             current_solution.append([item])
     print("Initial:")
     for bin in current_solution:
-        print(bin)
+        print(bin) """
     
+    current_solution = [[3],[5], [2], [7], [1], [4], [8], [6]]
 
     lh = [current_solution] * 20
     s = lh[0]
     for i in range(1000):
+        if(randomize):
+            random.shuffle(s)
+            randomize = False
+            print(s)
         neighbor()
 
 '''
