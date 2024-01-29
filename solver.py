@@ -36,7 +36,7 @@ def bin_packing_integer(items, bin_capacity):
             prob += x[i][j] <= y[j] """
 
     # Resolve o problema
-    prob.solve()
+    prob.solve(PULP_CBC_CMD(timeLimit=3600, logPath=f"Saídas/Solver/{}", path="../HiGHS/build/bin/highs"))
 
     # Imprime o status da solução
     print("Status:", prob.status)

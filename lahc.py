@@ -10,7 +10,6 @@ lh = []
 randomize = False
 
 def read_input_file(fileName):
-    global bin_capacity
     with open(fileName, 'r') as file:
         bin_count = int(file.readline())
         bin_capacity = int(file.readline())
@@ -18,7 +17,7 @@ def read_input_file(fileName):
         for item in range(bin_count):
             weights.append(int(file.readline()))
 
-        return bin_count, bin_capacity, weights
+        return bin_capacity, weights, bin_count
 
 def lista_com_menor_comprimento(lista_de_listas):
     if not lista_de_listas:
@@ -78,10 +77,24 @@ def late_acceptance(new_solution):
 
 def bin_packing_lahc(items):
     global bin_capacity, s, lh, randomize
+    current_solution = []
+
+    for item in items:
+        current_solution.append([item])
+    #print(f"SOLUÇÃO INICIAL => {current_solution}")
+
+    lh = [current_solution] * 20
+    s = lh[0]
+    for i in range(10000):
+        if(randomize):
+            random.shuffle(s)
+            randomize = False
+        neighbor()
+
+def first_fit(items):
     current_solution = [[]]
 
-    # First fit
-    """ for item in items:
+    for item in items:
         old_bin = False
         for bin in current_solution:
             if sum(bin) + item <= bin_capacity:
@@ -90,34 +103,21 @@ def bin_packing_lahc(items):
                 break
         if(not old_bin):
             current_solution.append([item])
-    print("Initial:")
-    for bin in current_solution:
-        print(bin) """
-    
-    current_solution = [[3],[5], [2], [7], [1], [4], [8], [6]]
+    print(f"SOLUÇÃO FINAL FIRST FIT => {len(current_solution)}")
 
-    lh = [current_solution] * 20
-    s = lh[0]
-    for i in range(1000):
-        if(randomize):
-            random.shuffle(s)
-            randomize = False
-            print(s)
-        neighbor()
-
-'''
-# exemplo
-items = [3,5,2,7,1,4,8,6]
-bin_capacity = 10
-'''
-
-#bin, bin_capacity, items = read_input_file('instances/BPP_100_150_0.1_0.7_0.txt')
 
 if __name__ == '__main__':
-    bin_capacity = 10
-    items = [3,5,2,7,1,4,8,6]
-
-    bin_packing_lahc(items)
-    print("Result:")
-    for bin in s:
-        print(bin)
+    for i in range(10):
+        random.seed(i)
+        bin_capacity, items, bin_count = read_input_file("./instances/1002_80000_NR_27.txt")
+        inicio = time.time()
+        bin_packing_lahc(items)
+        final = time.time()
+        first_fit(items)
+    
+        #print(f"RESULTADO FINAL => {s}")
+        print(f"SEMENTE => {i}")
+        print(f"SOLUÇÃO INICIAL => {bin_count}")
+        print(f"SOLUÇÃO FINAL => {len(s)}")
+        print(f"TEMPO TOTAL => {final-inicio}")
+        print("\n\n")
