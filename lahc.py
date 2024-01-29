@@ -109,7 +109,7 @@ def first_fit(items):
 if __name__ == '__main__':
     for i in range(10):
         random.seed(i)
-        bin_capacity, items, bin_count = read_input_file("./instances/1002_80000_NR_27.txt")
+        bin_capacity, items, bin_count = read_input_file("./instances/402_10000_DI_18.txt")
         inicio = time.time()
         bin_packing_lahc(items)
         final = time.time()
